@@ -8,15 +8,12 @@ const superAdminSchema = new Schema(
     {
         superadminid: {
             type: String,
-            default: () => `superadmin_${new mongoose.Types.ObjectId()}`
+            default: () => `sa_${new mongoose.Types.ObjectId().toHexString().substring(0, 6)}`
         },
         name: {
             type: String,
             required: true,
-            unique: true,
             lowercase: true,
-            trim: true,
-            index: true
         },
         email: {
             type: String,
@@ -29,7 +26,6 @@ const superAdminSchema = new Schema(
         contact_number: {
             type: String,
             required: true,
-            unique: true,
             trim: true,
             match: [/^\+?[1-9]\d{1,14}$/, 'is invalid']
         },

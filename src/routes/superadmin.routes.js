@@ -1,22 +1,16 @@
 import express from "express";
-import { registerSuperadmin, loginSuperadmin, logoutSuperadmin, changeCurrentPassword, getCurrentSuperadmin, updateSuperadminAccountDetails, updateSuperadminAvatar, refreshAccessToken } from "../controllers/superadmin.controller.js";
+import { getCurrentSuperAdmin, loginSuperAdmin, logoutSuperAdmin, registerSuperAdmin, updateSuperAdmin} from "../controllers/superadmin.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
-// import { verifySuperadminJWT } from "../middlewares/auth.middleware.js";
+import { verifySuperadminJWT } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 // Public routes
-router.post("/register", upload.fields([{ name: "superadmin_avatar", maxCount: 1 }]), registerSuperadmin);
-// router.post("/login", loginSuperadmin);
-
-// // Protected routes
-// router.use(verifySuperadminJWT);
-
-// router.post("/logout", logoutSuperadmin);
-// router.post("/change-password", changeCurrentPassword);
-// router.get("/current-superadmin", getCurrentSuperadmin);
-// router.patch("/update-account", updateSuperadminAccountDetails);
+router.post("/register", upload.fields([{ name: "superadmin_avatar", maxCount: 1 }]), registerSuperAdmin);
+router.post("/login", loginSuperAdmin);
+router.get("/current-superadmin",verifySuperadminJWT , getCurrentSuperAdmin);
+router.get("/logout", verifySuperadminJWT , logoutSuperAdmin);
+router.patch("/update-account", verifySuperadminJWT, updateSuperAdmin);
 // router.patch("/update-avatar", upload.single("superadmin_avatar"), updateSuperadminAvatar);
-// router.post("/refresh-token", refreshAccessToken);
 
 export default router;
