@@ -51,6 +51,28 @@ const registerAdmin = asyncHandler(async (req, res) => {
     );
 });
 
+// Controller function to get current admin details
+const getCurrentAdmin = asyncHandler(async (req, res) => {
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                req.admin,
+                "Admin fetched successfully"
+            )
+        );
+});
+
+// Controller function to get all admins
+const getAllAdmins = asyncHandler(async (req, res) => {
+    const admins = await Admin.find().select("-password -refreshToken");
+    return res.status(200).json(
+        new ApiResponse(200, admins, "All admins fetched successfully")
+    );
+});
+
+
 // Controller function to login an admin
 const loginAdmin = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
@@ -127,93 +149,6 @@ const logoutAdmin = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "Admin logged out"));
 });
 
-// Controller function to refresh access token
-const refreshAccessToken = asyncHandler(async (req, res) => {
-    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
-
-    if (!incomingRefreshToken) {
-        throw new ApiError(401, "Unauthorized request");
-    }
-
-    try {
-        const decodedToken = jwt.verify(
-            incomingRefreshToken,
-            process.env.REFRESH_TOKEN_SECRET
-        );
-
-        const admin = await Admin.findById(decodedToken?._id);
-
-        if (!admin) {
-            throw new ApiError(401, "Invalid refresh token");
-        }
-
-        if (incomingRefreshToken !== admin?.refreshToken) {
-            throw new ApiError(401, "Refresh token is expired or used");
-        }
-
-        const options = {
-            httpOnly: true,
-            secure: true,
-        };
-
-        const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(admin._id);
-
-        return res
-            .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", newRefreshToken, options)
-            .json(
-                new ApiResponse(
-                    200,
-                    { accessToken, refreshToken: newRefreshToken },
-                    "Access token refreshed"
-                )
-            );
-    } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid refresh token");
-    }
-});
-
-// Controller function to change admin's current password
-const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const { oldPassword, newPassword } = req.body;
-
-    const admin = await Admin.findById(req.admin?._id);
-
-    const isPasswordCorrect = await admin.isPasswordCorrect(oldPassword);
-
-    if (!isPasswordCorrect) {
-        throw new ApiError(400, "Invalid old password");
-    }
-
-    admin.password = newPassword;
-    await admin.save({ validateBeforeSave: false });
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, "Password changed successfully"));
-});
-
-// Controller function to get current admin details
-const getCurrentAdmin = asyncHandler(async (req, res) => {
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200,
-                req.admin,
-                "Admin fetched successfully"
-            )
-        );
-});
-
-// Controller function to get all admins
-const getAllAdmins = asyncHandler(async (req, res) => {
-    const admins = await Admin.find().select("-password -refreshToken");
-    return res.status(200).json(
-        new ApiResponse(200, admins, "All admins fetched successfully")
-    );
-});
 
 // Controller function to delete an admin account by ID
 const deleteAdmin = asyncHandler(async (req, res) => {
@@ -236,11 +171,9 @@ const deleteAdmin = asyncHandler(async (req, res) => {
 
 export {
     registerAdmin,
-    loginAdmin,
     getCurrentAdmin,
-    logoutAdmin,
-    changeCurrentPassword,
-    refreshAccessToken,
     getAllAdmins,
+    loginAdmin,
+    logoutAdmin,
     deleteAdmin
 };

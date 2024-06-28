@@ -2,21 +2,20 @@
 
 import express from "express";
 import { upload } from "../middlewares/multer.middleware.js";
-import { verifyAdminJWT, verifySuperadminJWT } from "../middlewares/auth.middleware.js";
-import { changeCurrentPassword, deleteAdmin, getAllAdmins, getCurrentAdmin, loginAdmin, logoutAdmin, refreshAccessToken, registerAdmin } from "../controllers/admin.controller.js";
+// import { verifyAdminJWT, verifySuperadminJWT } from "../middlewares/auth.middleware.js";
+import { deleteAdmin, getAllAdmins, getCurrentAdmin, loginAdmin, logoutAdmin, registerAdmin } from "../controllers/admin.controller.js";
 
 const router = express.Router();
 
 // Public routes
+
+router.post("/register", upload.fields([{ name: "avatar", maxCount: 1 }]), registerAdmin);
+router.get("/current-admin", getCurrentAdmin);
+router.get("/all", getAllAdmins); 
 router.post("/login", loginAdmin);
 router.post("/logout", logoutAdmin);
-router.get("/current-admin", getCurrentAdmin);
-router.post("/refresh-token", refreshAccessToken);
+router.delete("/delete-account/:id", deleteAdmin); 
 
-// Routes protected by superadmin
-router.post("/register", verifySuperadminJWT, upload.fields([{ name: "avatar", maxCount: 1 }]), registerAdmin);
-router.patch("/change-password", verifySuperadminJWT, changeCurrentPassword);
-router.get("/all", verifySuperadminJWT, getAllAdmins); 
-router.delete("/delete-account/:id", verifySuperadminJWT, deleteAdmin); 
+
 
 export default router;
