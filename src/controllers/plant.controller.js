@@ -33,7 +33,10 @@ const createPlant = async (req, res, next) => {
 
   try {
     // Get the plant owner ID from the authenticated client
-    const plantowner = req.client._id;
+    const plantowner = "umakant1234";
+        // const plantowner = req.client._id;
+
+    
 
     // Create the plant
     const plant = await PlantInformation.create({
@@ -71,6 +74,39 @@ const createPlant = async (req, res, next) => {
           message: "Plant information created successfully",
         },
         "Plant created successfully"
+      )
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Controller function to retrieve current plant details
+const getCurrentPlant = async (req, res, next) => {
+  try {
+    // Extract plantid from the request parameters
+    const { plantid } = req.params;
+
+    // Fetch the plant from the database using plantid
+    const plant = await PlantInformation.findOne({ plantid }).populate('plantowner', 'name email');
+
+    // If plant is not found, return a 404 response
+    if (!plant) {
+      return res.status(404).json(
+        new ApiResponse(
+          404,
+          null,
+          "Plant not found"
+        )
+      );
+    }
+
+    // Respond with success
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { plant },
+        "Current plant fetched successfully"
       )
     );
   } catch (error) {
@@ -171,29 +207,7 @@ const deletePlant = async (req, res, next) => {
   }
 };
 
-// Controller function to retrieve current plant details
-const getCurrentPlant = async (req, res, next) => {
-  try {
-    // Fetch current plant from req.plant (assuming it's set in middleware)
-    const plant = req.plant;
 
-    // Populate owner reference field
-    await plant.populate('plantowner', 'name email').execPopulate();
-
-    // Respond with success
-    return res.status(200).json(
-      new ApiResponse(
-        200,
-        {
-          plant,
-        },
-        "Current plant fetched successfully"
-      )
-    );
-  } catch (error) {
-    next(error);
-  }
-};
 
 export {
   createPlant,

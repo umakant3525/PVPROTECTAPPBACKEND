@@ -20,6 +20,7 @@ import superadminRouter from './routes/superadmin.routes.js'
 // import adminRouter from './routes/admin.routes.js'
 // import clientRouter from './routes/client.routes.js'
 // import technicianRouter from './routes/technician.routes.js'
+import plantRouter from './routes/plant.routes.js'
 
 // Routes declaration
 // http://localhost:8000/api/v1/healthcheck
@@ -28,5 +29,6 @@ app.use("/api/v1/superadmin", superadminRouter)
 // app.use("/api/v1/admin", adminRouter)
 // app.use("/api/v1/client", clientRouter)
 // app.use("/api/v1/technician", technicianRouter)
+app.use("/api/v1/plant", plantRouter)
 
 export { app }

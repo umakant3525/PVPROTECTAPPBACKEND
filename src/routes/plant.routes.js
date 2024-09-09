@@ -1,7 +1,7 @@
 // routes/plant.routes.js
 
 import express from "express";
-import { verifyAdminJWT, verifyClientJWT } from "../middlewares/auth.middleware.js";
+// import { verifyAdminJWT, verifyClientJWT } from "../middlewares/auth.middleware.js";
 import {
   createPlant,
   getCurrentPlant,
@@ -13,10 +13,15 @@ import {
 const router = express.Router();
 
 // Public routes (Assuming middleware checks are done before calling controllers)
-router.post("/create", verifyAdminJWT, createPlant);
-router.get("/plant/:plantid", verifyClientJWT, getCurrentPlant);
-router.get("/all", getAllPlants);
-router.put("/update/:plantid", verifyAdminJWT, updatePlant);
-router.delete("/delete/:plantid", verifyAdminJWT, deletePlant);
+// router.post("/create", verifyAdminJWT, createPlant);
+// router.get("/plant/:plantid", verifyClientJWT, getCurrentPlant);
+// router.get("/all", getAllPlants);
+// router.put("/update/:plantid", verifyAdminJWT, updatePlant);
+// router.delete("/delete/:plantid", verifyAdminJWT, deletePlant);
+router.post("/create-plant", createPlant);
+router.get("/current-plant/:plantid", getCurrentPlant);
+router.get("/all-plants", getAllPlants);
+router.put("/update/:plantid", updatePlant);
+router.delete("/delete/:plantid", deletePlant);
 
 export default router;

@@ -14,7 +14,8 @@ const plantInformationSchema = new Schema(
       required: true,
     },
     plantowner: {
-      type: mongoose.Schema.Types.ObjectId,
+      // type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: 'Client',
       required: true,
     },
@@ -23,7 +24,9 @@ const plantInformationSchema = new Schema(
       required: true,
     },
     adminRef: {
-      type: mongoose.Schema.Types.ObjectId,
+      // type: mongoose.Schema.Types.ObjectId,
+      type: String,
+
       ref: 'Admin',
       required: true,
     },
@@ -33,7 +36,6 @@ const plantInformationSchema = new Schema(
     },
     operationYear: {
       type: String,
-      enum: ['2023-2024', '2024-2025', '2025-2026'], // Example enum for operation year
     },
     postCommissioningAudit: {
       type: String,
